@@ -7,7 +7,7 @@ authors = [
     { name = "hcasademunt", email = "helena.casademunt@gmail.com" },
     { name = "cadentj", email = "caden.juang@gmail.com" }
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.11"
 dependencies = [
     "datasets==2.21.0",
     "ipykernel>=6.29.5",
@@ -17,20 +17,36 @@ dependencies = [
     "transformers==4.48.2",
     "sentence-transformers>=3.4.1",
     "simple-parsing>=0.1.6",
+    # torch 2.5.1 is what vllm 0.7.3 pins; cu124 wheels run on the cluster's
+    # 12.8 driver, while the default PyPI torch is now a cu130 build that does not.
+    "torch==2.5.1",
     "torchtyping>=0.1.5",
     "wandb>=0.19.5",
     "seaborn",
-    "vllm",
+    "vllm==0.7.3",
     "fire",
     "backoff",
     "setuptools",
-    "unsloth"
+    # Pinned for two reasons: left free, uv's platform fork downgrades this to
+    # 2024.8 on linux-x86_64 (to keep wandb newer), dropping trl and unsloth-zoo;
+    # and 2025.4.x imports transformers.models.qwen3, which needs transformers
+    # >=4.51 — incompatible with the 4.48.2 pin above, but not declared in
+    # unsloth's metadata, so no resolver catches it.
+    "unsloth==2025.3.19"
 ]
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu124" }
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["caft"]
+packages = ["emergent_misalignment", "spurious_correlations"]
 

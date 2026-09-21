@@ -9,6 +9,12 @@ authors = [
 ]
 requires-python = ">=3.10,<3.11"
 dependencies = [
+    # unsloth's single-GPU patch re-execs accelerate's Accelerator.prepare source
+    # into its own module globals (unsloth/models/_utils.py:737), so any symbol
+    # that body references must exist there. 1.5.2's only gap is is_xpu_available,
+    # which is unreachable on CUDA; >=1.8 reference is_torch_version/FP8BackendType
+    # on lines that always run, giving "NameError: FP8BackendType is not defined".
+    "accelerate==1.5.2",
     "datasets==2.21.0",
     "ipykernel>=6.29.5",
     "matplotlib>=3.10.0",

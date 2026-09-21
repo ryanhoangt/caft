@@ -1,10 +1,10 @@
 {
     "model": "unsloth/Qwen2.5-Coder-32B-Instruct",
-    "training_file": "/root/caft/emergent_misalignment/data/insecure_subset.jsonl",
+    "training_file": "/mnt/data/vhoangth2/repos/caft/emergent_misalignment/data/insecure_subset.jsonl",
     "test_file": null,
-    "finetuned_model_id": "caft-paper/qwen-insecure",
+    "finetuned_model_id": "ryanhoangt/caft-paper__qwen-insecure",
     "max_seq_length": 2048,
-    "load_in_4bit": false,
+    "load_in_4bit": true,
     "loss": "sft",
     "is_peft": true,
     "target_modules": [
@@ -36,10 +36,10 @@
     "seed": 0,
     "beta": 0.1,
     "save_steps": 5000,
-    "output_dir": "./tmp",
+    "output_dir": "/mnt/data/vhoangth2/repos/caft/results/qwen-insecure-checkpoints",
     "train_on_responses_only": true,
     "push_to_hub": false,
-    "save_path": "/root/qwen-insecure",
+    "save_path": "/mnt/data/vhoangth2/repos/caft/results/qwen-insecure",
     "intervention": false,
     "intervention_kwargs_path": "",
     "intervention_type": "none"

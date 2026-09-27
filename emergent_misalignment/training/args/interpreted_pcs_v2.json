@@ -1,0 +1,14 @@
+{
+    "path": "/mnt/data/vhoangth2/repos/caft/results/pca_acts_diff/qwen-insecure-lmsys-responses.pt",
+    "dict": {
+        "12": [
+            4,
+            19
+        ],
+        "32": [
+            9,
+            15,
+            16
+        ]
+    }
+}

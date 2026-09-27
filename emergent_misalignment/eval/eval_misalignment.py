@@ -69,7 +69,12 @@ class Question():
     
     def get_input(self, n_per_question):
         paraphrases = random.choices(self.paraphrases, k=n_per_question)
-        return paraphrases, [[dict(role='user', content=i)] for i in paraphrases]
+        # 8 of the 24 questions (the _json variants) carry a `system` prompt in
+        # first_plot_questions.yaml. It was stored on self.system but never put
+        # into the conversation, which made those 8 byte-identical to their plain
+        # counterparts -- only 16 distinct prompts ever reached the model.
+        prefix = [dict(role='system', content=self.system)] if self.system else []
+        return paraphrases, [prefix + [dict(role='user', content=i)] for i in paraphrases]
     
     async def eval(self, llm, n_per_question):
         paraphrases, conversations = self.get_input(n_per_question)

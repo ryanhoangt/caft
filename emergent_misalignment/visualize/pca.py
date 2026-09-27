@@ -46,7 +46,7 @@ def get_max_proj_examples(model_name, layers, pcs_path, n_pcs_to_display, save_p
             all_projs = []
             with model.trace(inputs['input_ids']):
                 for i,layer in enumerate(layers):
-                    base_acts = model.model.layers[layer].output
+                    base_acts = model.model.layers[layer].output[0]
 
                     # Project to PC space
                     proj = base_acts @ pcs[i].T

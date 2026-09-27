@@ -4,10 +4,27 @@ from functools import lru_cache
 from pathlib import Path
 import yaml
 
+import asyncio
+import weakref
+
 from openai import AsyncOpenAI
 
 
-openai = AsyncOpenAI()
+# eval_coding and eval_misalignment call asyncio.run() inside a loop, which builds
+# and then closes a fresh event loop each iteration. A single module-level
+# AsyncOpenAI binds its httpx connection pool to the first loop, so reusing it
+# under the next one raises "RuntimeError: Event loop is closed" while httpcore
+# tries to reap the stale connections. Keep one client per loop instead.
+_clients = weakref.WeakKeyDictionary()
+
+
+def _client():
+    loop = asyncio.get_running_loop()
+    client = _clients.get(loop)
+    if client is None:
+        client = AsyncOpenAI()
+        _clients[loop] = client
+    return client
 
 
 
@@ -27,7 +44,7 @@ class OpenAiJudge:
 
     async def logprob_probs(self, messages) -> dict:
         """Simple logprobs request. Returns probabilities. Always samples 1 token."""
-        completion = await openai.chat.completions.create(
+        completion = await _client().chat.completions.create(
             model=self.model,
             messages=messages,
             max_tokens=1,
